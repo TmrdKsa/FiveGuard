@@ -1,0 +1,692 @@
+Here is a professional, interactive, and high-performance web interface for the **Guard** system.
+
+This is a single-file HTML solution. Since I cannot connect to actual game servers (FiveM, Rockstar, Steam) or backend security APIs (Eagle, FiveGuard) directly from a browser, I have built a **fully functional simulation**. This tool demonstrates the frontend engineering, state management, and UI/UX expected for such a system.
+
+### Key Features Implemented:
+*   **Anti Spoof Bypass:** A sophisticated toggle interface that simulates checking for active protections (Eagle, FiveGuard, Electron) and bypassing them.
+*   **Generators:** Fully interactive interfaces for generating Steam, Rockstar, and "Discord Soon" profiles with loading animations and copy-to-clipboard functionality.
+*   **Cybersecurity UI:** Dark mode, neon accents, terminal-like logs, and responsive design.
+*   **Toast Notification System:** Replaces native alerts with professional pop-up messages.
+
+Save the following code as an `.html` file (e.g., `guard_tool.html`) and open it in your browser.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guard | Security & Gen Tool</title>
+    <!-- Importing a tech-style font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0f0f11;
+            --text-main: #e0e0e0;
+            --text-muted: #8b8b93;
+            --primary: #00f2ff; /* Cyan */
+            --primary-dim: rgba(0, 242, 255, 0.1);
+            --danger: #ff2a6d;
+            --success: #05ffa1;
+            --warning: #ffae00;
+            --border: #27272a;
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .brand {
+            font-family: var(--font-code);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px var(--primary-dim);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .brand span { color: white; }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 12px 16px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-dim);
+            color: var(--primary);
+            border-color: rgba(0, 242, 255, 0.2);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+            background-image: radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.03) 0%, transparent 20%);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* --- Anti Spoof / Bypass Module --- */
+        .bypass-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .bypass-card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bypass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--border);
+            transition: background 0.3s;
+        }
+
+        .bypass-card.detected::before { background: var(--danger); }
+        .bypass-card.secured::before { background: var(--success); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #222;
+            color: #aaa;
+            font-family: var(--font-code);
+            font-weight: bold;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-bypass {
+            background-color: var(--danger);
+            color: white;
+        }
+        .btn-bypass:hover { background-color: #d61e55; }
+        .btn-bypass:disabled { background-color: #442235; cursor: not-allowed; color: #888; }
+
+        .btn-protect {
+            background-color: var(--success);
+            color: #000;
+        }
+        .btn-protect:hover { background-color: #00db8a; }
+
+        /* --- Generators --- */
+        .gen-container {
+            max-width: 600px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .gen-input {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--primary);
+            font-family: var(--font-code);
+            font-size: 1.1rem;
+            transition: border 0.3s;
+        }
+
+        .gen-input:focus {
+            border-color: var(--primary);
+        }
+
+        .gen-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-gen {
+            flex: 1;
+            padding: 14px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+
+        .btn-gen:hover { box-shadow: 0 0 15px var(--primary-dim); }
+        .btn-gen:active { transform: scale(0.98); }
+
+        .btn-copy {
+            padding: 14px;
+            background: #27272a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-copy:hover { background: #3f3f46; }
+
+        .discord-soon {
+            text-align: center;
+            padding: 40px;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            color: var(--text-muted);
+        }
+
+        .discord-soon svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 15px;
+            fill: var(--text-muted);
+        }
+
+        /* --- Terminal Log --- */
+        .terminal {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 200px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            overflow-y: hidden;
+            pointer-events: none; /* Let clicks pass through if needed */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .log-entry { margin-bottom: 4px; opacity: 0.8; }
+        .log-time { color: var(--text-muted); margin-right: 8px; }
+        .log-info { color: var(--primary); }
+        .log-warn { color: var(--warning); }
+        .log-error { color: var(--danger); }
+        .log-success { color: var(--success); }
+
+        /* --- Toast Notification --- */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: var(--panel-bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
+            color: white;
+        }
+
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--danger); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 10px; }
+            .nav-links { flex-direction: row; overflow-x: auto; padding-bottom: 5px; }
+            .nav-btn { white-space: nowrap; }
+            .terminal { display: none; } /* Hide terminal on mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>GUARD</span>
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="switchTab('anti-spoof')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                Anti Spoof
+            </button>
+            <button class="nav-btn" onclick="switchTab('gen-steam')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
+                Gen Steam
+            </button>
+            <button class="nav-btn" onclick="switchTab('gen-rockstar')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                Gen Rockstar
+            </button>
+            <button class="nav-btn" onclick="switchTab('gen-discord')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                Gen Discord
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Section: Anti Spoof -->
+        <section id="anti-spoof" class="section active">
+            <h1>Anti Spoof & Bypass</h1>
+            <p class="subtitle">Manage protection status and bypass active security modules.</p>
+            
+            <div class="bypass-grid">
+                <!-- Eagle -->
+                <div class="bypass-card" id="card-eagle">
+                    <div class="card-header">
+                        <h3>Eagle Anti-Cheat</h3>
+                        <span class="status-badge" id="status-eagle">Scanning...</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: #888;">Kernel-level protection detection.</p>
+                    <button class="action-btn btn-bypass" id="btn-eagle" onclick="attemptBypass('eagle')">Bypass Detected</button>
+                </div>
+
+                <!-- FiveGuard -->
+                <div class="bypass-card" id="card-fiveguard">
+                    <div class="card-header">
+                        <h3>FiveGuard</h3>
+                        <span class="status-badge" id="status-fiveguard">Scanning...</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: #888;">Script detection and event blocking.</p>
+                    <button class="action-btn btn-bypass" id="btn-fiveguard" onclick="attemptBypass('fiveguard')">Bypass Detected</button>
+                </div>
+
+                <!-- Electron -->
+                <div class="bypass-card" id="card-electron">
+                    <div class="card-header">
+                        <h3>Electron</h3>
+                        <span class="status-badge" id="status-electron">Scanning...</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: #888;">UI rendering and injection checks.</p>
+                    <button class="action-btn btn-bypass" id="btn-electron" onclick="attemptBypass('electron')">Bypass Detected</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Gen Steam -->
+        <section id="gen-steam" class="section">
+            <h1>Steam Account Generator</h1>
+            <p class="subtitle">Generate random login credentials for testing environments.</p>
+            
+            <div class="gen-container">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" class="gen-input" id="steam-user" readonly placeholder="Click Generate...">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="text" class="gen-input" id="steam-pass" readonly placeholder="Click Generate...">
+                </div>
+                <div class="gen-controls">
+                    <button class="btn-gen" onclick="generateSteam()">Generate</button>
+                    <button class="btn-copy" onclick="copyToClipboard('steam-user')">Copy User</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Gen Rockstar -->
+        <section id="gen-rockstar" class="section">
+            <h1>Rockstar Games Generator</h1>
+            <p class="subtitle">Create temporary social club identifiers.</p>
+            
+            <div class="gen-container">
+                <div class="input-group">
+                    <label>Social Club Name</label>
+                    <input type="text" class="gen-input" id="rockstar-user" readonly placeholder="Click Generate...">
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="text" class="gen-input" id="rockstar-email" readonly placeholder="Click Generate...">
+                </div>
+                <div class="gen-controls">
+                    <button class="btn-gen" onclick="generateRockstar()">Generate</button>
+                    <button class="btn-copy" onclick="copyToClipboard('rockstar-user')">Copy Name</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Gen Discord -->
+        <section id="gen-discord" class="section">
+            <h1>Discord Tools</h1>
+            <p class="subtitle">Token generation and account management.</p>
+            
+            <div class="gen-container discord-soon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path></svg>
+                <h2>Coming Soon</h2>
+                <p>Discord generation module is currently under maintenance.</p>
+                <button class="btn-gen" style="margin-top:20px; opacity: 0.5; cursor: not-allowed;" disabled>Notify Me</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Terminal Logs -->
+    <div class="terminal" id="terminal">
+        <div class="log-entry"><span class="log-time">[SYSTEM]</span> <span class="log-info">Guard System Initialized...</span></div>
+        <div class="log-entry"><span class="log-time">[SYSTEM]</span> <span class="log-info">Modules loaded successfully.</span></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-area"></div>
+
+    <script>
+        // --- Logger Utility ---
+        function log(message, type = 'info') {
+            const terminal = document.getElementById('terminal');
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            
+            let colorClass = 'log-info';
+            if (type === 'warn') colorClass = 'log-warn';
+            if (type === 'error') colorClass = 'log-error';
+            if (type === 'success') colorClass = 'log-success';
+
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="${colorClass}">${message}</span>`;
+            
+            terminal.appendChild(entry);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // --- Toast Notification Utility ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-area');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            container.appendChild(toast);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- Navigation Logic ---
+        function switchTab(tabId) {
+            // Update Buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            // Find the button that calls this function (rough approximation for simplicity)
+            const btns = document.querySelectorAll('.nav-btn');
+            if(tabId === 'anti-spoof') btns[0].classList.add('active');
+            if(tabId === 'gen-steam') btns[1].classList.add('active');
+            if(tabId === 'gen-rockstar') btns[2].classList.add('active');
+            if(tabId === 'gen-discord') btns[3].classList.add('active');
+
+            // Update Sections
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+
+            log(`Switched to module: ${tabId}`);
+        }
+
+        // --- Anti Spoof / Bypass Logic (Simulation) ---
+        const spoofState = {
+            eagle: 'scanning',
+            fiveguard: 'scanning',
+            electron: 'scanning'
+        };
+
+        function initAntiSpoof() {
+            setTimeout(() => checkSystem('eagle'), 500);
+            setTimeout(() => checkSystem('fiveguard'), 1200);
+            setTimeout(() => checkSystem('electron'), 1900);
+        }
+
+        function checkSystem(system) {
+            // Randomly determine if detected or clean for simulation
+            const isDetected = Math.random() > 0.3; // 70% chance of detection simulation
+            
+            const card = document.getElementById(`card-${system}`);
+            const badge = document.getElementById(`status-${system}`);
+            const btn = document.getElementById(`btn-${system}`);
+
+            if (isDetected) {
+                spoofState[system] = 'detected';
+                card.classList.add('detected');
+                badge.textContent = 'THREAT DETECTED';
+                badge.style.background = '#ff2a6d44';
+                badge.style.color = '#ff2a6d';
+                btn.textContent = 'Bypass Now';
+                btn.disabled = false;
+                log(`${system.toUpperCase()}: Threat signature found.`, 'error');
+            } else {
+                spoofState[system] = 'clean';
+                card.classList.add('secured');
+                badge.textContent = 'SECURE';
+                badge.style.background = '#05ffa144';
+                badge.style.color = '#05ffa1';
+                btn.textContent = 'Protected';
+                btn.className = 'action-btn btn-protect'; // Change style
+                btn.disabled = true;
+                log(`${system.toUpperCase()}: System clean.`, 'success');
+            }
+        }
+
+        function attemptBypass(system) {
+            const btn = document.getElementById(`btn-${system}`);
+            
+            if (spoofState[system] === 'clean') return;
+
+            btn.disabled = true;
+            btn.textContent = 'Injecting...';
+            log(`${system.toUpperCase()}: Starting bypass injection...`, 'warn');
+
+            setTimeout(() => {
+                const success = Math.random() > 0.1; // 90% success chance
+                
+                if (success) {
+                    const badge = document.getElementById(`status-${system}`);
+                    document.getElementById(`card-${system}`).classList.remove('detected');
+                    document.getElementById(`card-${system}`).classList.add('secured');
+                    
+                    badge.textContent = 'BYPASSED';
+                    badge.style.background = '#05ffa144';
+                    badge.style.color = '#05ffa1';
+                    
+                    btn.textContent = 'Active';
+                    btn.className = 'action-btn btn-protect';
+                    
+                    spoofState[system] = 'bypassed';
+                    showToast(`${system} bypassed successfully!`);
+                    log(`${system.toUpperCase()}: Bypass injection successful.`, 'success');
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = 'Retry';
+                    showToast(`Bypass failed for ${system}`, 'error');
+                    log(`${system.toUpperCase()}: Injection failed. Retry required.`, 'error');
+                }
+            }, 1500);
+        }
+
+        // --- Generators Logic ---
+        function randomString(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function generateSteam() {
+            const user = 'User_' + Math.floor(Math.random() * 999999);
+            const pass = randomString(12);
+            
+            document.getElementById('steam-user').value = user;
+            document.getElementById('steam-pass').value = pass;
+            
+            log(`Generated Steam account: ${user}`);
+            showToast('New Steam account generated');
+        }
+
+        function generateRockstar() {
+            const adjs = ['Fast', 'Silent', 'Shadow', 'Crimson', 'Ghost', 'Neon'];
+            const nouns = ['Racer', 'Gamer', 'Hawk', 'Viper', 'Wolf', 'Drifter'];
+            
+            const name = adjs[Math.floor(Math.random() * adjs.length)] + 
+                         nouns[Math.floor(Math.random() * nouns.length)] + 
+                         Math.floor(Math.random() * 100);
+            const email = name.toLowerCase() + '@tempmail.com';
+            
+            document.getElementById('rockstar-user').value = name;
+            document.getElementById('rockstar-email').value = email;
+            
+            log(`Generated Rockstar account: ${name}`);
+            showToast('New Rockstar account generated');
+        }
+
+        function copyToClipboard(elementId) {
+            const el = document.getElementById(elementId);
+            if (!el.value) {
+                showToast('Nothing to copy!', 'error');
+                return;
+            }
+            
+            el.select();
+            el.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(el.value).then(() => {
+                showToast('Copied to clipboard');
+                log(`Copied data: ${el.value.substring(0, 10)}...`);
+            });
+        }
+
+        // Initialize
+        window.onload = function() {
+            initAntiSpoof();
+            log('GUI Loaded. Waiting for user input...');
+        };
+
+    </script>
+</body>
+</html>
+```
