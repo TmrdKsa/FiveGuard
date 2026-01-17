@@ -8,112 +8,8 @@
   <!-- خطوط -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#0b0f13;
-      --card:#0f1720;
-      --muted:#93a0ad;
-      --accent:#00c5d4;
-      --success:#31c48d;
-      --danger:#ff6b6b;
-      --glass: rgba(255,255,255,0.03);
-      --radius:12px;
-      --gap:14px;
-      color-scheme: dark;
-    }
-    html,body{
-      height:100%;
-      margin:0;
-      background:linear-gradient(180deg,#061018 0%, #08131a 100%);
-      font-family:Inter, system-ui, Arial, sans-serif;
-      color:#e6eef3;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-
-    /* Layout */
-    .app {
-      display:grid;
-      grid-template-columns:260px 1fr;
-      gap:20px;
-      height:100vh;
-      padding:22px;
-      box-sizing:border-box;
-      align-items:start;
-    }
-    .sidebar {
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow:0 8px 30px rgba(2,6,23,0.6);
-    }
-    .brand {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-bottom:14px;
-    }
-    .logo {
-      width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#006b7a);
-      display:flex;align-items:center;justify-content:center;font-weight:700;font-family:JetBrains Mono;
-    }
-    .brand h1{
-      margin:0;font-size:16px;line-height:1.05;
-    }
-    .nav {
-      display:flex;flex-direction:column;gap:8px;margin-top:10px;
-    }
-    .nav button{
-      background:transparent;color:var(--muted);border:0;padding:10px;border-radius:8px;text-align:right;cursor:pointer;
-    }
-    .nav button.active{
-      background:linear-gradient(90deg, rgba(0,197,212,0.08), rgba(0,197,212,0.04));
-      color:var(--accent);font-weight:600;
-    }
-
-    /* Main content */
-    .main {
-      display:flex;flex-direction:column;gap:16px;
-    }
-    .panel {
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-      border-radius:14px;padding:18px;box-shadow:0 6px 20px rgba(2,6,23,0.5);
-    }
-    .grid {
-      display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
-    }
-    .card {
-      background:var(--glass);padding:14px;border-radius:12px;min-height:110px;
-    }
-    .card h3{margin:0 0 8px 0;font-size:14px}
-    .badge {
-      display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;background:rgba(255,255,255,0.03);color:var(--muted);
-    }
-    .status-ok{color:var(--success)}
-    .status-warn{color:#f6c85f}
-    .status-bad{color:var(--danger)}
-
-    /* terminal */
-    .terminal {
-      background:#081018;border-radius:10px;padding:12px;height:210px;overflow:auto;font-family:JetBrains Mono;font-size:12px;
-      color:#cfeaf0;border:1px solid rgba(255,255,255,0.02);
-    }
-
-    /* forms and inputs */
-    .row{display:flex;gap:10px;align-items:center;}
-    input[type="text"], input[type="email"]{
-      background:#061018;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px;color:inherit;flex:1;
-    }
-    button.primary{
-      background:linear-gradient(90deg,var(--accent),#05a3b0);border:0;padding:9px 12px;border-radius:9px;color:#07161a;font-weight:700;cursor:pointer;
-    }
-    footer.small{font-size:12px;color:var(--muted);margin-top:6px;text-align:left}
-
-    @media (max-width: 900px){
-      .app{grid-template-columns:1fr; padding:12px}
-      .grid{grid-template-columns:1fr}
-    }
-  </style>
+  <!-- ملف الأنماط الخارجي -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="app" role="application" aria-label="GUARD — محاكاة تعليمية">
@@ -122,7 +18,7 @@
         <div class="logo">G</div>
         <div>
           <h1>GUARD — محاكاة</h1>
-          <div style="font-size:12px;color:var(--muted)">نسخة عرض توضيحيّة (تعليمي)</div>
+          <div class="muted">نسخة عرض توضيحيّة (تعليمي)</div>
         </div>
       </div>
 
@@ -133,7 +29,7 @@
         <button id="tab-about" role="tab" aria-selected="false" tabindex="-1" data-target="about">معلومات</button>
       </nav>
       <footer style="margin-top:14px">
-        <div class="small">محاكاة تعليمية — لا تقوم بأي تواصل خارجي</div>
+        <div class="small muted">محاكاة تعليمية — لا تقوم بأي تواصل خارجي</div>
       </footer>
     </aside>
 
@@ -141,7 +37,7 @@
       <!-- Scan / Resolve panel -->
       <section id="scan" class="panel" role="tabpanel" aria-hidden="false">
         <h2>فحص النظام (محاكاة)</h2>
-        <p style="color:var(--muted);margin-top:6px">هذه محاكاة لعملية مسح واكتشاف عناصر قد تكون 'مريبة'. كل النتائج وهمية لغرض العرض والتعلّم.</p>
+        <p class="muted">هذه محاكاة لعملية مسح واكتشاف عناصر قد تكون 'مريبة'. كل النتائج وهمية لغرض العرض والتعلّم.</p>
 
         <div class="grid" style="margin-top:12px">
           <div class="card" id="card-process">
@@ -170,7 +66,7 @@
 
           <div class="card" id="card-actions">
             <h3>إجراءات مقترحة (محاكاة)</h3>
-            <div style="margin-top:6px;color:var(--muted)">بعد الفحص، سيُعرض هنا مخرجات التوصيات — يمكن حفظها في السجل المحلي.</div>
+            <div class="muted" style="margin-top:6px">بعد الفحص، سيُعرض هنا مخرجات التوصيات — يمكن حفظها في السجل المحلي.</div>
             <div style="margin-top:12px" class="row">
               <button class="primary" id="btn-resolve">تطبيق الإجراءات المقترحة (محاكاة)</button>
             </div>
@@ -186,27 +82,27 @@
       <!-- Generators -->
       <section id="generators" class="panel" role="tabpanel" aria-hidden="true" style="display:none;">
         <h2>مولّدات بيانات للاختبار (محاكاة)</h2>
-        <p style="color:var(--muted);margin-top:6px">يمكنك إنشاء بيانات تجريبية لاستخدامها في بيئات تطوير/اختبار فقط.</p>
+        <p class="muted">يمكنك إنشاء بيانات تجريبية لاستخدامها في بيئات تطوير/اختبار فقط.</p>
 
         <div style="margin-top:12px" class="card">
           <h3>مولّد بيانات حساب تجريبي</h3>
           <div class="row">
             <input id="gen-username" type="text" readonly aria-label="اسم المستخدم المولد" placeholder="اسم المستخدم">
             <button class="primary" id="btn-gen">توليد</button>
-            <button id="btn-copy" title="نسخ" aria-label="نسخ" style="padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);cursor:pointer;">نسخ</button>
+            <button id="btn-copy" title="نسخ" aria-label="نسخ" class="copy-btn">نسخ</button>
           </div>
-          <div style="margin-top:8px;color:var(--muted);font-size:13px">يمكن استخدام هذه البيانات داخل بيئات اختبارية فقط.</div>
+          <div style="margin-top:8px" class="muted" >يمكن استخدام هذه البيانات داخل بيئات اختبارية فقط.</div>
         </div>
       </section>
 
       <!-- Logs -->
       <section id="logs" class="panel" role="tabpanel" aria-hidden="true" style="display:none;">
         <h2>السجلات المحلية</h2>
-        <p style="color:var(--muted)">السجلات تحفظ محليًا في ملف <strong>logs.txt</strong> داخل مجلد التطبيق.</p>
+        <p class="muted">السجلات تحفظ محليًا في ملف <strong>logs.txt</strong> داخل مجلد التطبيق.</p>
         <div style="margin-top:12px" class="card">
           <button class="primary" id="btn-load-logs">تحميل السجلات</button>
           <div style="margin-top:10px">
-            <textarea id="logs-content" style="width:100%;height:280px;background:#061018;border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,0.02);color:#bfe9ee;font-family:JetBrains Mono;font-size:12px" readonly></textarea>
+            <textarea id="logs-content" class="logs-area" readonly></textarea>
           </div>
         </div>
       </section>
@@ -214,236 +110,13 @@
       <!-- About -->
       <section id="about" class="panel" role="tabpanel" aria-hidden="true" style="display:none;">
         <h2>حول العرض</h2>
-        <p style="color:var(--muted)">هذه واجهة محاكاة تعليمية مُصمَّمة للشرح والعرض فقط. لا تقوم بأي عمليات خارج النظام أو شبكة الإنترنت.</p>
-        <div style="margin-top:10px;color:var(--muted)">المزايا الجديدة: فصل منطق الواجهة، API لحفظ السجل المحلي، دعم RTL، تحسينات توافقية وإمكانية الوصول.</div>
+        <p class="muted">هذه واجهة محاكاة تعليمية مُصمَّمة للشرح والعرض فقط. لا تقوم بأي عمليات خارج النظام أو شبكة الإنترنت.</p>
+        <div style="margin-top:10px" class="muted">المزايا الجديدة: فصل منطق الواجهة، API لحفظ السجل المحلي، دعم RTL، تحسينات توافقية وإمكانية الوصول.</div>
       </section>
     </main>
   </div>
 
-  <script>
-    // index.js (مضمّن)
-    // بنية منظمة: كائن Simulation يتعامل مع واجهة المستخدم والمنطق.
-    (function () {
-      'use strict';
-
-      // مساعدة: طباعة في الطرفية (DOM) وإرسال السجل إلى بايثون عبر pywebview API إذا متاح.
-      const terminal = document.getElementById('terminal');
-
-      function uiLog(text, level = 'info') {
-        const time = new Date().toLocaleTimeString();
-        const el = document.createElement('div');
-        el.textContent = `[${time}] ${text}`;
-        el.setAttribute('data-level', level);
-        terminal.appendChild(el);
-        terminal.scrollTop = terminal.scrollHeight;
-
-        // إذا كانت pywebview متاحة، احفظ السجل محليًا
-        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.save_log === 'function') {
-          try {
-            // حفظ الرسائل البسيطة عبر API
-            window.pywebview.api.save_log(`[${time}] ${text}`).catch(()=>{/* ignore */});
-          } catch (e) {
-            // قد يحدث خطأ عند عدم توفر الAPI في بيئات غير pywebview
-            console.warn('save_log failed', e);
-          }
-        }
-      }
-
-      // مولّد بيانات بسيط
-      function randomId(len = 8) {
-        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        let s = '';
-        for (let i=0;i<len;i++) s += chars.charAt(Math.floor(Math.random()*chars.length));
-        return s;
-      }
-
-      // كلاس يدير المحاكاة
-      class Simulation {
-        constructor() {
-          // عناصر UI
-          this.btnScanProcess = document.getElementById('btn-scan-process');
-          this.btnScanIntegrity = document.getElementById('btn-scan-integrity');
-          this.btnScanNetwork = document.getElementById('btn-scan-network');
-          this.btnResolve = document.getElementById('btn-resolve');
-
-          this.processBadge = document.getElementById('process-badge');
-          this.integrityBadge = document.getElementById('integrity-badge');
-          this.networkBadge = document.getElementById('network-badge');
-
-          this.btnGen = document.getElementById('btn-gen');
-          this.inputUsername = document.getElementById('gen-username');
-          this.btnCopy = document.getElementById('btn-copy');
-
-          this.btnLoadLogs = document.getElementById('btn-load-logs');
-          this.logsContent = document.getElementById('logs-content');
-
-          // ربط الأحداث
-          this.bind();
-          uiLog('تم تحميل الواجهة بنجاح. (محاكاة تعليمية)');
-        }
-
-        bind() {
-          this.btnScanProcess.addEventListener('click', () => this.scanProcesses());
-          this.btnScanIntegrity.addEventListener('click', () => this.scanIntegrity());
-          this.btnScanNetwork.addEventListener('click', () => this.scanNetwork());
-          this.btnResolve.addEventListener('click', () => this.applyResolutions());
-
-          this.btnGen.addEventListener('click', () => this.generateTestAccount());
-          this.btnCopy.addEventListener('click', () => this.copyUsername());
-          this.btnLoadLogs.addEventListener('click', () => this.loadLogs());
-
-          // قائمة التبويبات
-          document.getElementById('nav').addEventListener('click', (ev) => {
-            const btn = ev.target.closest('button');
-            if (!btn) return;
-            const target = btn.dataset.target;
-            this.switchTab(target);
-            // تحكم بالوصول وسم ARIA
-            document.querySelectorAll('#nav button').forEach(b=> {
-              b.classList.toggle('active', b===btn);
-              b.setAttribute('aria-selected', b===btn ? 'true' : 'false');
-              b.tabIndex = b===btn ? 0 : -1;
-            });
-          });
-        }
-
-        switchTab(id) {
-          document.querySelectorAll('main section[role="tabpanel"]').forEach(s => {
-            const show = s.id === id;
-            s.style.display = show ? '' : 'none';
-            s.setAttribute('aria-hidden', (!show).toString());
-          });
-          uiLog(`تم الانتقال إلى: ${id}`);
-        }
-
-        async scanProcesses() {
-          this.processBadge.textContent = 'جارٍ الفحص...';
-          uiLog('بدء فحص العمليات (محاكاة)...');
-          await this.wait(900);
-          // نتيجة عشوائية آمنة
-          const ok = Math.random() > 0.3;
-          if (ok) {
-            this.processBadge.textContent = 'لا توجد تهديدات ظاهرة';
-            this.processBadge.className = 'badge status-ok';
-            uiLog('فحص العمليات: نظيف');
-          } else {
-            this.processBadge.textContent = 'تم العثور على عناصر مريبة (محاكاة)';
-            this.processBadge.className = 'badge status-warn';
-            uiLog('فحص العمليات: عناصر مريبة (نتيجة وهمية)');
-          }
-        }
-
-        async scanIntegrity() {
-          this.integrityBadge.textContent = 'جارٍ فحص سلامة...';
-          uiLog('بدء فحص سلامة الملفات (محاكاة)...');
-          await this.wait(1200);
-          const ok = Math.random() > 0.15;
-          if (ok) {
-            this.integrityBadge.textContent = 'سلامة الملفات: جيدة';
-            this.integrityBadge.className = 'badge status-ok';
-            uiLog('فحص سلامة الملفات: جيد');
-          } else {
-            this.integrityBadge.textContent = 'ملفات متغيرة - تحتاج مراجعة';
-            this.integrityBadge.className = 'badge status-warn';
-            uiLog('فحص سلامة الملفات: تغييرات (محاكاة)');
-          }
-        }
-
-        async scanNetwork() {
-          this.networkBadge.textContent = 'جارٍ فحص الشبكة...';
-          uiLog('بدء فحص الشبكة المحلية (محاكاة)...');
-          await this.wait(800);
-          const ok = Math.random() > 0.25;
-          if (ok) {
-            this.networkBadge.textContent = 'الاتصالات المحلية: طبيعية';
-            this.networkBadge.className = 'badge status-ok';
-            uiLog('فحص الشبكة: طبيعي');
-          } else {
-            this.networkBadge.textContent = 'اتصالاتٌ غير متوقعة (محاكاة)';
-            this.networkBadge.className = 'badge status-warn';
-            uiLog('فحص الشبكة: اتصالات غير متوقعة (محاكاة)');
-          }
-        }
-
-        async applyResolutions() {
-          uiLog('تطبيق الإجراءات المقترحة (محاكاة)...');
-          // لمحاكاة تنفيذ سلسلة إجراءات
-          const steps = [
-            'حفظ نقاط الفحص',
-            'إنشاء تقرير مُختصر',
-            'اقتراح إجراءات تصحيحية'
-          ];
-          for (const s of steps) {
-            uiLog(`- ${s}`);
-            await this.wait(600);
-          }
-          uiLog('اكتمل: الإجراءات المقترحة مُطبَّقة (محاكاة).');
-        }
-
-        async generateTestAccount() {
-          const uname = `test_${randomId(6)}`;
-          this.inputUsername.value = uname;
-          uiLog(`تم توليد حساب تجريبي: ${uname}`);
-        }
-
-        copyUsername() {
-          const val = this.inputUsername.value;
-          if (!val) {
-            uiLog('لا يوجد اسم مستخدم لنسخه', 'warn');
-            return;
-          }
-          navigator.clipboard.writeText(val).then(() => {
-            uiLog(`تم نسخ: ${val}`);
-          }).catch(() => {
-            uiLog('فشل النسخ — حاول يدوياً', 'warn');
-          });
-        }
-
-        async loadLogs() {
-          uiLog('طلب تحميل السجلات المحلية...');
-          if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.read_logs === 'function') {
-            try {
-              const result = await window.pywebview.api.read_logs();
-              if (result && result.ok) {
-                this.logsContent.value = result.content || '';
-                uiLog('تم تحميل السجلات المحلية.');
-              } else {
-                uiLog('فشل في تحميل السجلات: ' + (result.message || 'خطأ غير معروف'), 'warn');
-              }
-            } catch (e) {
-              uiLog('حدث خطأ أثناء طلب السجلات', 'warn');
-            }
-          } else {
-            uiLog('بيئة التشغيل لا تدعم واجهة pywebview (عرض فقط)', 'warn');
-          }
-        }
-
-        wait(ms) {
-          return new Promise(res => setTimeout(res, ms));
-        }
-      }
-
-      // تهيئة الـ Simulation عند اكتمال تحميل الصفحة
-      window.addEventListener('DOMContentLoaded', () => {
-        window.app = new Simulation();
-      });
-
-      // تصدير بسيط للمختبرين إن احتاجوا لاستدعاءات يدوية من Console
-      window._GUARD = {
-        log: (m) => uiLog(String(m)),
-        saveLogToHost: async (m) => {
-          if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.save_log === 'function') {
-            try {
-              return await window.pywebview.api.save_log(m);
-            } catch (e) {
-              return {ok:false, message:String(e)};
-            }
-          }
-          return {ok:false, message:'pywebview not present'};
-        }
-      };
-
-    })();
-  </script>
+  <!-- ملف جافاسكربت الخارجي -->
+  <script src="app.js" defer></script>
 </body>
 </html>
